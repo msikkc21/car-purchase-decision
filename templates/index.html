@@ -1,0 +1,81 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Purchase Decision</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 10px;
+            margin: auto;
+            max-width: 900px;
+            background-color: #D7EEEB;
+        }
+        form {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: rgb(199, 199, 199);
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="number"], input[type="text"] {
+            width: 100%;
+            height: 30px;
+            margin-bottom: 20px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button[type="submit"] {
+            width: 100%;
+            height: 40px;
+            background-color: #6359EC;
+            color: #fff;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: medium;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #4886D3;
+        }
+
+        h1 {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <h1>Car Purchase Decision</h1>
+    <form method="post" action="">
+        <label for="gender">Masukkan Jenis Kelamin ( Male / Female ) : </label>
+        <input type="text" name="gender" required><br/>
+        <label for="age">Masukkan Umur ( 1 - 100 ) : </label>
+        <input type="number" name="age" required><br/>
+        <label for="salary">Masukkan Gaji Tahunan ( Contoh: 6500 ) : </label>
+        <input type="number" name="salary" required><br/>
+        <button type="submit">Prediksi hasil</button>
+    </form>
+
+    <h3>Hasil Prediksi</h3>
+    <p>Keputusan membeli : {{ prediction }}</p>
+    <p>Probabilitas membeli : {{ beli }}%</p>
+    <p>Probabilitas tidak membeli : {{ tidak }}%</p>
+    <h3>Akurasi Model</h3>
+    <p>Akurasi : {{ accuracy }}%</p>
+    <p>F1 Score : {{ f1 }}</p>
+    <p>Recall Score : {{ recall }}</p>
+
+</body>
+</html>
