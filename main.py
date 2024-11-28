@@ -1,9 +1,11 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score, f1_score, recall_score
+from sklearn.metrics import classification_report, accuracy_score, f1_score, recall_score, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 from flask import Flask, render_template, request
+import matplotlib.pyplot as plt
+import seaborn as sns
 
 # Membaca dataset
 data = pd.read_csv('./car_data.csv')
@@ -45,6 +47,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 rf_model = RandomForestClassifier(n_estimators=100, random_state=0)
 rf_model.fit(X_train, y_train)
 
+
 # Evaluasi model
 y_pred = rf_model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
@@ -52,12 +55,21 @@ f1 = f1_score(y_test, y_pred)
 recall = recall_score(y_test, y_pred)
 report = classification_report(y_test, y_pred)
 
+
 # Menampilkan hasil evaluasi
 print("Akurasi Model: {:.2f}%".format(accuracy * 100))
 print("F1-Score: {:.2f}".format(f1))
 print("Recall: {:.2f}".format(recall))
 print("\nClassification Report:\n", report)
-
+    
+# Confusion Matrix
+conf_matrix = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(8, 6))
+sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['Purchased', 'Not Purchased'], yticklabels=['Purchased', 'Not Purchased'])
+plt.xlabel('Predicted')
+plt.ylabel('Actual')
+plt.title('Confusion Matrix - Random Forest')
+plt.show()
 
 # FLASK START
 app = Flask(__name__)
@@ -91,4 +103,4 @@ def home():
     return render_template("index.html", prediction = None)
 
 if __name__ == "__main__":
-    app.run( host= "127.0.0.9", port= 8080, debug=True)
+    app.run( host= "127.0.0.9", port= 8080, debug=False)
