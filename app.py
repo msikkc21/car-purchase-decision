@@ -1,11 +1,9 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, accuracy_score, f1_score, recall_score, confusion_matrix
+from sklearn.metrics import accuracy_score, f1_score, recall_score, confusion_matrix
 from sklearn.preprocessing import LabelEncoder
 from flask import Flask, render_template, request
-import matplotlib.pyplot as plt
-import seaborn as sns
 
 # Membaca dataset
 data = pd.read_csv('./car_data.csv')
@@ -15,9 +13,6 @@ data.dropna(inplace=True)
 
 # Menghapus baris duplikat
 data.drop_duplicates(inplace=True)
-
-# Mengubah kolom 'Gender' menjadi kategori
-data['Gender'] = data['Gender'].astype('category')
 
 # Menghapus outlier berdasarkan IQR untuk kolom 'Age'
 Q1 = data['Age'].quantile(0.25)
@@ -40,6 +35,7 @@ print(data.head())
 X = data[['Gender', 'Age', 'AnnualSalary']]  # Fitur
 y = data['Purchased']             # Target
 
+
 # Membagi data menjadi data latih dan data uji
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=1)
 
@@ -47,29 +43,46 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 rf_model = RandomForestClassifier(n_estimators=100, random_state=0)
 rf_model.fit(X_train, y_train)
 
-
 # Evaluasi model
 y_pred = rf_model.predict(X_test)
-accuracy = accuracy_score(y_test, y_pred)
-f1 = f1_score(y_test, y_pred)
-recall = recall_score(y_test, y_pred)
-report = classification_report(y_test, y_pred)
+
+cm = [[0,0],[0,0]]
+for true, pred in zip(y_test, y_pred):
+    if true == 0 and pred == 0: # True Negatif
+        cm[0][0] += 1
+    elif true == 0 and pred == 1:  # False Positif
+        cm[0][1] += 1
+    elif true == 1 and pred == 0:  # False Negatif
+        cm[1][0] += 1
+    elif true == 1 and pred == 1:  # True Positif
+        cm[1][1] += 1
+
+tn, fp, fn, tp = cm[0][0], cm[0][1], cm[1][0], cm[1][1]
+
+accuracy = (tp + tn) / (tp + tn + fp + fn)
+recall = tp / (tp + fn) if (tp + fn) != 0 else 0
+specificity = tn / (tn + fp) if (tn + fp) != 0 else 0
+precision = tp / (tp + fp) if (tp + fp) != 0 else 0
+f1_score = 2 * (precision * recall) / (precision + recall) if (precision + recall) != 0 else 0
+
+accuracy = accuracy * 100
+recall = recall * 100
+specificity = specificity * 100
+precision = precision * 100
+f1_score = f1_score * 100
 
 
-# Menampilkan hasil evaluasi
-print("Akurasi Model: {:.2f}%".format(accuracy * 100))
-print("F1-Score: {:.2f}".format(f1))
-print("Recall: {:.2f}".format(recall))
-print("\nClassification Report:\n", report)
-    
-# Confusion Matrix
-conf_matrix = confusion_matrix(y_test, y_pred)
-plt.figure(figsize=(8, 6))
-sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['Purchased', 'Not Purchased'], yticklabels=['Purchased', 'Not Purchased'])
-plt.xlabel('Predicted')
-plt.ylabel('Actual')
-plt.title('Confusion Matrix - Random Forest')
-plt.show()
+# Cetak Hasil
+print("Hasil Evaluasi Model Random Forest")
+print("Confusion Matrix:")
+print(f"[[{tn} {fp}]")
+print(f" [{fn} {tp}]]")
+print(f"Accuracy    : {accuracy:.2f}%")
+print(f"Recall      : {recall:.2f}%")
+print(f"Specificity : {specificity:.2f}%")
+print(f"Precision   : {precision:.2f}%")
+print(f"F1-Score    : {f1_score:.2f}%")
+
 
 # FLASK START
 app = Flask(__name__)
@@ -83,7 +96,7 @@ def home():
 
         if gender == "Male" :
             gender = 1
-        else :
+        elif gender =="Female" :
             gender = 0
         age = float(age)
         salary = float(salary)
@@ -98,9 +111,8 @@ def home():
         prob_beli = prediction_proba_rf[0][1] * 100
         prob_tidak = prediction_proba_rf[0][0] * 100
 
-        accuracy = accuracy_score(y_test, y_pred) * 100
-        return render_template("index.html", prediction = prediksi, accuracy = accuracy, beli = prob_beli, tidak = prob_tidak, f1 = f1, recall = recall)
+        return render_template("index.html", prediction = prediksi, accuracy = accuracy, beli = prob_beli, tidak = prob_tidak, f1 = f'{f1_score:.2f}', recall = f'{recall:.2f}', specificity = specificity, precision = f'{precision:.2f}')
     return render_template("index.html", prediction = None)
 
 if __name__ == "__main__":
-    app.run( host= "127.0.0.9", port= 8080, debug=False)
+    app.run( host= "127.0.0.9", port= 8080, debug=True)

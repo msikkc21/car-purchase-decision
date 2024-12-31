@@ -1,93 +1,268 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Car Purchase Decision</title>
+    <link
+      rel="stylesheet"
+      src="{{ url_for('static', filename='styles.css') }}"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      src="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}"
+      type="text/css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
     <style>
-        select {
-            width: 100%;
-            height: 30px;
-            margin-bottom: 20px;
-            padding-left: 5px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 10px;
-            margin: auto;
-            max-width: 900px;
-            background-color: #D7EEEB;
-        }
-        form {
-            margin-top: 20px;
-            padding: 20px;
-            border-radius: 20px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            background-color: rgb(199, 199, 199);
-        }
-        label {
-            display: block;
-            margin-bottom: 10px;
-        }
-        input[type="number"], input[type="text"] {
-            width: 100%;
-            height: 30px;
-            margin-bottom: 20px;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button[type="submit"] {
-            width: 100%;
-            height: 40px;
-            background-color: #6359EC;
-            color: #fff;
-            padding: 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: medium;
-        }
+      .element,
+      html {
+        scrollbar-width: none;
+      }
+      html::-webkit-scrollbar,
+      .element::-webkit-scrollbar {
+        display: none;
+      }
 
-        button[type="submit"]:hover {
-            background-color: #4886D3;
-        }
+      body {
+        font-family: 'Poppins' !important;
+      }
 
-        h1 {
-            text-align: center;
-        }
+      .btnSubmit {
+        background-color: #e38e39;
+        color: #ffffff;
+        font-weight: bold;
+        margin-top: 40px;
+      }
+
+      .btnSubmit:hover {
+        background-color: #edaa68;
+        color: #ffffff;
+      }
+
+      #form {
+        background-color: #0a1c64;
+        color: #ffffff;
+        border-radius: 40px;
+        max-width: 600px;
+      }
+
+      #main {
+        background-color: #071344;
+        height: 95vh;
+      }
+
+      #hasil {
+        max-width: 700px;
+        border-color: #071344;
+      }
+
+      #akurasi {
+        max-width: 700px;
+      }
     </style>
-</head>
-<body>
-    <h1>Car Purchase Decision</h1>
-    <form method="post" action="">
-        <label for="gender">Masukkan Jenis Kelamin ( Male / Female ) : </label>
-        <select name="gender" id="gender">
-            <option value="Male">Male</option>
-            <option value="Female">Female</option>
-        </select> 
-        <label for="age">Masukkan Umur ( 1 - 100 ) : </label>
-        <input type="number" name="age" required><br/>
-        <label for="salary">Masukkan Gaji Tahunan ( Contoh: 6500 ) : </label>
-        <input type="number" name="salary" required><br/>
-        <button type="submit">Prediksi hasil</button>
-    </form>
+  </head>
+  <body>
+    <div class="container">
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-5">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#main">
+            <img
+              src="{{ url_for('static', filename='img/Logo.png') }}"
+              alt="logo"
+              width="100px"
+            />
+          </a>
+          <button
+            class="navbar-toggler border-0"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarNav"
+            aria-controls="navbarNav"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span>
+              <svg
+                width="30"
+                height="30"
+                viewBox="0 0 100 100"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M89.0625 50C89.0625 51.2432 88.5686 52.4355 87.6896 53.3146C86.8105 54.1936 85.6182 54.6875 84.375 54.6875H15.625C14.3818 54.6875 13.1895 54.1936 12.3104 53.3146C11.4314 52.4355 10.9375 51.2432 10.9375 50C10.9375 48.7568 11.4314 47.5645 12.3104 46.6854C13.1895 45.8064 14.3818 45.3125 15.625 45.3125H84.375C85.6182 45.3125 86.8105 45.8064 87.6896 46.6854C88.5686 47.5645 89.0625 48.7568 89.0625 50ZM15.625 29.6875H84.375C85.6182 29.6875 86.8105 29.1936 87.6896 28.3146C88.5686 27.4355 89.0625 26.2432 89.0625 25C89.0625 23.7568 88.5686 22.5645 87.6896 21.6854C86.8105 20.8064 85.6182 20.3125 84.375 20.3125H15.625C14.3818 20.3125 13.1895 20.8064 12.3104 21.6854C11.4314 22.5645 10.9375 23.7568 10.9375 25C10.9375 26.2432 11.4314 27.4355 12.3104 28.3146C13.1895 29.1936 14.3818 29.6875 15.625 29.6875ZM84.375 70.3125H15.625C14.3818 70.3125 13.1895 70.8064 12.3104 71.6854C11.4314 72.5645 10.9375 73.7568 10.9375 75C10.9375 76.2432 11.4314 77.4355 12.3104 78.3146C13.1895 79.1936 14.3818 79.6875 15.625 79.6875H84.375C85.6182 79.6875 86.8105 79.1936 87.6896 78.3146C88.5686 77.4355 89.0625 76.2432 89.0625 75C89.0625 73.7568 88.5686 72.5645 87.6896 71.6854C86.8105 70.8064 85.6182 70.3125 84.375 70.3125Z"
+                  fill="black"
+                />
+              </svg>
+            </span>
+          </button>
+          <div
+            class="collapse navbar-collapse justify-content-end"
+            id="navbarNav"
+          >
+            <ul class="navbar-nav">
+              <li class="nav-item mx-3">
+                <a class="nav-link" aria-current="page" href="#main">Home</a>
+              </li>
+              <li class="nav-item mx-3">
+                <a class="nav-link" href="#prediction">Prediction</a>
+              </li>
+              <li class="nav-item mx-3">
+                <a class="nav-link" href="#aboutus">About Us</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
 
-    <h3>Hasil Prediksi</h3>
-    <p>Keputusan membeli : {{ prediction }}</p>
-    <p>Probabilitas membeli : {{ beli }}%</p>
-    <p>Probabilitas tidak membeli : {{ tidak }}%</p>
-    <h3>Akurasi Model</h3>
-    <p>Akurasi : {{ accuracy }}%</p>
-    <p>F1 Score : {{ f1 }}</p>
-    <p>Recall Score : {{ recall }}</p>
 
-</body>
+    <div class="p-5 d-flex" id="main">
+      <div class="container d-flex justify-content-between my-auto">
+        <div class="my-auto">
+          <div class="text-white d-flex">
+            <img src="{{ url_for('static', filename='img/logo2.svg') }}" alt="logo" width="95px">
+            <h1 class="align-self-end display-3 font-weight-bold">utoPredict</h1>
+          </div>
+          <p class="text-white py-3" style="font-size: 24px;">Precision in Every Decision.</p>
+        </div>
+        <img src="{{ url_for('static', filename='img/illustration.svg') }}" alt="illustration" width="400px">
+      </div>
+    </div>
+
+    <div class="p-5" id="prediction">
+      <div class="container p-5" id="form">
+        <h1 class="text-center fw-bolder pb-5">Car Purchase Decision</h1>
+        <form method="post" action="">
+          <div class="form-group my-3">
+            <label for="gender"
+              >Masukkan Jenis Kelamin ( Male / Female ) :
+            </label>
+            <select class="form-control" name="gender" id="gender">
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+            </select>
+          </div>
+          <div class="form-group my-3">
+            <label for="age">Masukkan Umur ( 1 - 100 ) : </label>
+            <input class="form-control" type="number" name="age" required />
+          </div>
+          <div class="form-group my-3">
+            <label for="salary"
+              >Masukkan Gaji Tahunan USD ( Contoh: 6500 ) :
+            </label>
+            <input class="form-control" type="number" name="salary" required />
+          </div>
+          <div class="d-flex justify-content-center">
+            <button class="btn w-50 btnSubmit" type="submit">
+              Prediksi hasil
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+
+    {% if prediction is not none %}
+    <div class="container border border-3 rounded-5 p-5" id="hasil">
+      <h2 class="text-center fw-bolder">Hasil Prediksi</h2>
+      {% if prediction == 'Purchased' %}
+        <div class="alert alert-success text-center" role="alert">
+          PURCHASED
+        </div>
+        <p class="text-center">Anda akan membeli mobil dalam waktu dekat dengan tingkat probabilitas {{ beli }}%</p>
+        {% else %}
+        <div class="alert alert-danger text-center" role="alert">
+          NOT PURCHASED
+        </div>
+        <p class="text-center">Anda tidak akan membeli mobil dalam waktu dekat dengan tingkat probabilitas {{ tidak }}%</p>
+      {% endif %}
+    </div>
+    <div class="container border border-3 rounded-5 px-5 pt-5 pb-3 my-4 shadowx " id="akurasi">
+      <h3 class="text-center fw-bold mb-3">Akurasi Model</h3>
+      <table class="table">
+        <tr>
+          <td>Akurasi</td>
+          <td>:</td>
+          <td>{{ accuracy }}%</td>
+        </tr>
+        <tr>
+          <td>F1 - Score</td>
+          <td>:</td>
+          <td>{{ f1 }}%</td>
+        </tr>
+        <tr>
+          <td>Recall Score</td>
+          <td>:</td>
+          <td>{{ recall }}%</td>
+        </tr>
+        <tr>
+          <td>Precision</td>
+          <td>:</td>
+          <td>{{ precision }}%</td>
+        </tr>
+        <tr>
+          <td>Specificity Score</td>
+          <td>:</td>
+          <td>{{ specificity }}%</td>
+        </tr>
+      </table>
+    </div>
+    {% endif %}
+
+    <div id="aboutus" class="p-5" style="background-color: #0a1c64;">
+      <div class="container text-white">
+        <h3 class=" text-center fw-bold">About Us</h3>
+        <div class="d-flex mt-5">
+          <div class="my-auto" style="margin-right: 20px;">
+            <div class="text-white d-flex">
+              <img src="{{ url_for('static', filename='img/logo2.svg') }}" alt="logo" width="75px">
+              <h1 class="align-self-end display-6 font-weight-bold">utoPredict</h1>
+            </div>
+            <p class="text-white py-3" style="font-size: 18px;">Precision in Every Decision.</p>
+          </div>
+          <div style="margin-left: 20px;">
+            <p class="text-justify">
+              Kami adalah pengembang AutoPredict, sebuah platform berbasis machine learning yang memprediksi kemungkinan seseorang membeli mobil berdasarkan gender, usia, dan pendapatan tahunan. Proyek ini dikembangkan oleh:
+            </p>
+            <p class="text-justify">Muhammad Sulthonul Izza</p>
+            <p class="text-justify">Ahmad Galvin Firdaus Zahid</p>
+            <p class="text-justify">Muhammad Zakariyya</p>
+            <p class="text-justify">
+              AutoPredict hadir untuk memberikan solusi cepat dan akurat dalam mendukung pengambilan keputusan.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+
+    <footer class="bg-body-tertiary text-center text-lg-start">
+      <!-- Copyright -->
+      <div class="text-center text-white p-3" style="background-color: #071344">
+        All Rights Reserved • Copyright AutoPredict 2024 in Semarang
+      </div>
+      <!-- Copyright -->
+    </footer>
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+      integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+      integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+      crossorigin="anonymous"
+    ></script>
+  </body>
 </html>
